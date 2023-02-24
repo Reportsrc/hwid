@@ -1,0 +1,33 @@
+@EventTarget
+    public void onRender2D(final Render2DEvent event) {
+        if (counterDisplayValue.get()) {
+            GlStateManager.pushMatrix();
+
+            final BlockOverlay blockOverlay = (BlockOverlay) LiquidBounce.moduleManager.getModule(BlockOverlay.class);
+            if (blockOverlay.getState() && blockOverlay.getInfoValue().get() && blockOverlay.getCurrentBlock() != null)
+                GlStateManager.translate(0, 15F, 0);
+
+            final String info = "Blocks §7" + getBlocksAmount();
+            final ScaledResolution scaledResolution = new ScaledResolution(mc);
+            //RenderUtils.drawBorderedRect((scaledResolution.getScaledWidth() / 2) - 2, (scaledResolution.getScaledHeight() / 2) + 5, (scaledResolution.getScaledWidth() / 2) + Fonts.font40.getStringWidth(info) + 2, (scaledResolution.getScaledHeight() / 2) + 16, 3, Color.BLACK.getRGB(), Color.BLACK.getRGB());
+            GlStateManager.resetColor();
+            Fonts.font40.drawString(info, scaledResolution.getScaledWidth() / 2, scaledResolution.getScaledHeight() / 2 + 7, Color.WHITE.getRGB());
+
+            GlStateManager.popMatrix();
+        }
+    }
+    @EventTarget
+    public void onRender3D(final Render3DEvent event) {
+        if (!markValue.get())
+            return;
+        for (int i = 0; i < ((modeValue.get().equalsIgnoreCase("Expand") && !towerActivation()) ? expandLengthValue.get() + 1 : 2); i++) {
+            double x, size, y, boundindY, z, convertedPoints[], xd, posX = mc.thePlayer.lastTickPosX + (mc.thePlayer.posX - mc.thePlayer.lastTickPosX) * event.getPartialTicks() - (mc.getRenderManager()).renderPosX;
+            double posY = mc.thePlayer.lastTickPosY + (mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * event.getPartialTicks() - (mc.getRenderManager()).renderPosY;
+            double posZ = mc.thePlayer.lastTickPosZ + (mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ) * event.getPartialTicks() - (mc.getRenderManager()).renderPosZ;
+            ESPUtils.cylinder(mc.thePlayer, posX, posY, posZ, 1, 64);
+            ESPUtils.shadow(mc.thePlayer, posX, posY, posZ, 1, 64);
+        }
+    }
+
+private final BoolValue counterDisplayValue = new BoolValue("Counter", true);
+    private final BoolValue markValue = new BoolValue("Mark", true);
